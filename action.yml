@@ -8,7 +8,7 @@ inputs:
   packagename:
     description: 'package name'
     required: true
-    default: ''
+    default: 'blog'
 runs:
   using: 'node12'
   main: 'dist/index.js'
