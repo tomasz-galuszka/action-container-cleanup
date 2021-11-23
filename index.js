@@ -19,7 +19,7 @@ async function run() {
     containersSortedList.splice(0, 2)
     console.log(containersSortedList)
 
-    containersSortedList.forEach((container) => {
+    containersSortedList.forEach(async (container) => {
       const response = await octokit.rest.packages.deletePackageVersionForUser({
         package_type: 'container',
         package_name: core.getInput('packagename'),
