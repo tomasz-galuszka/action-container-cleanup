@@ -6,7 +6,8 @@ async function run() {
     const token = core.getInput('token')
     const params = {
       package_type: 'container',
-      package_name: core.getInput('packagename')
+      package_name: core.getInput('packagename'),
+      username: 'tomasz-galuszka'
     }
     console.log(JSON.stringify(params, null, 2))
 
