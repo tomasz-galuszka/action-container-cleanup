@@ -2,13 +2,19 @@ const core = require('@actions/core')
 const github = require('@actions/github')
 
 try {
-  const nameToGreet = core.getInput('name')
-  const time = new Date().toTimeString()
-  const eventPayload = JSON.stringify(github.context.payload, undefined, 2)
+  const token = core.getInput('token')
+  const username = core.getInput('username')
+  const packagename = core.getInput('packagename')
 
-  core.setOutput('time', time)
-  console.log(`Hello ${nameToGreet}`)
-  console.log(`The event payload: ${eventPayload}`)
+  const octokit = github.getOctokit(token)
+
+  const response = await octokit.request('GET /users/{username}/packages/{package_type}/{package_name}/versions', {
+    package_type: 'container',
+    package_name: packagename,
+    username: username
+  })
+
+  console.log(response)
 } catch (error) {
   console.setFailed(error.message)
 }

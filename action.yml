@@ -1,13 +1,18 @@
 name: 'Hello World'
 description: 'Greet someone and record the time'
 inputs:
-  name: # id of input
-    description: 'Who to greet'
+  token:
+    description: 'authentication token'
     required: true
-    default: 'Tomek'
-outputs:
-  time: # id of output
-    description: 'The time we greeted you'
+    default: ''
+  username:
+    description: 'repository owner name'
+    required: true
+    default: ''
+  packagename:
+    description: 'package name'
+    required: true
+    default: ''
 runs:
   using: 'node12'
   main: 'dist/index.js'
