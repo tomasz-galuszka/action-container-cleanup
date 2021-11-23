@@ -39,7 +39,12 @@ const response = {
       created_at: '2021-11-22T13:44:18Z',
       updated_at: '2021-11-22T13:44:18Z',
       html_url: 'https://github.com/users/tomasz-galuszka/packages/container/blog/10672151',
-      metadata: [Object]
+      metadata: {
+        package_type: 'container',
+        container: {
+          tags: ['latest-feature-repo-cleanup', '0.1.8-SNAPSHOT-feature-repo-cleanup']
+        }
+      }
     },
     {
       id: 10658418,
@@ -49,7 +54,12 @@ const response = {
       created_at: '2021-11-22T09:27:43Z',
       updated_at: '2021-11-22T09:27:43Z',
       html_url: 'https://github.com/users/tomasz-galuszka/packages/container/blog/10658418',
-      metadata: [Object]
+      metadata: {
+        package_type: 'container',
+        container: {
+          tags: ['latest-feature-repo-cleanup', '0.1.8-SNAPSHOT-feature-repo-cleanup']
+        }
+      }
     },
     {
       id: 10630076,
@@ -59,7 +69,12 @@ const response = {
       created_at: '2021-11-21T15:00:51Z',
       updated_at: '2021-11-21T15:00:51Z',
       html_url: 'https://github.com/users/tomasz-galuszka/packages/container/blog/10630076',
-      metadata: [Object]
+      metadata: {
+        package_type: 'container',
+        container: {
+          tags: ['latest-feature-repo-cleanup', '0.1.8-SNAPSHOT-feature-repo-cleanup']
+        }
+      }
     },
     {
       id: 10629953,
@@ -69,7 +84,12 @@ const response = {
       created_at: '2021-11-21T14:54:10Z',
       updated_at: '2021-11-21T14:54:10Z',
       html_url: 'https://github.com/users/tomasz-galuszka/packages/container/blog/10629953',
-      metadata: [Object]
+      metadata: {
+        package_type: 'container',
+        container: {
+          tags: ['latest-feature-repo-cleanup', '0.1.8-SNAPSHOT-feature-repo-cleanup']
+        }
+      }
     },
     {
       id: 10629668,
@@ -79,7 +99,12 @@ const response = {
       created_at: '2021-11-21T14:36:25Z',
       updated_at: '2021-11-21T14:36:25Z',
       html_url: 'https://github.com/users/tomasz-galuszka/packages/container/blog/10629668',
-      metadata: [Object]
+      metadata: {
+        package_type: 'container',
+        container: {
+          tags: ['latest-feature-repo-cleanup', '0.1.8-SNAPSHOT-feature-repo-cleanup']
+        }
+      }
     },
     {
       id: 10622162,
@@ -89,7 +114,12 @@ const response = {
       created_at: '2021-11-21T08:52:26Z',
       updated_at: '2021-11-21T08:52:26Z',
       html_url: 'https://github.com/users/tomasz-galuszka/packages/container/blog/10622162',
-      metadata: [Object]
+      metadata: {
+        package_type: 'container',
+        container: {
+          tags: ['latest-feature-repo-cleanup', '0.1.8-SNAPSHOT-feature-repo-cleanup']
+        }
+      }
     },
     {
       id: 10622107,
@@ -99,7 +129,12 @@ const response = {
       created_at: '2021-11-21T08:46:36Z',
       updated_at: '2021-11-21T08:46:36Z',
       html_url: 'https://github.com/users/tomasz-galuszka/packages/container/blog/10622107',
-      metadata: [Object]
+      metadata: {
+        package_type: 'container',
+        container: {
+          tags: ['latest-feature-repo-cleanup', '0.1.8-SNAPSHOT-feature-repo-cleanup']
+        }
+      }
     },
     {
       id: 10621964,
@@ -109,19 +144,44 @@ const response = {
       created_at: '2021-11-21T08:34:14Z',
       updated_at: '2021-11-21T08:34:14Z',
       html_url: 'https://github.com/users/tomasz-galuszka/packages/container/blog/10621964',
-      metadata: [Object]
+      metadata: {
+        package_type: 'container',
+        container: {
+          tags: ['latest-feature-repo-cleanup', '0.1.8-SNAPSHOT-feature-repo-cleanup']
+        }
+      }
     }
   ]
 }
 
-const containersSortedList = response.data.sort((a, b) => {
-  return new Date(b.updated_at) - new Date(a.updated_at)
-})
+function run() {
+  try {
+    const containersSortedList = response.data.sort((a, b) => {
+      return new Date(b.updated_at) - new Date(a.updated_at)
+    })
 
-console.log(containersSortedList.flatMap((c) => c.id))
-containersSortedList.splice(0, 2)
-console.log(containersSortedList.flatMap((c) => c.id))
+    const containerListForRemoval = containersSortedList.filter((container) => {
+      const tags = container.metadata.container.tags
+      let isNotImportant = false
+      for (let i = 0; i < tags.length; i++) {
+        const tag = tags[i]
+        if (tag.includes('feature') || tag.includes('release')) {
+          isNotImportant = true
+          break
+        }
+      }
+      return tags.length > 0 && isNotImportant
+    })
 
-containersSortedList.forEach((container) => {
-  console.log(container.id)
-})
+    console.log(`All containers size: ${containersSortedList.length}`)
+    console.log(`Containers to remove size: ${containerListForRemoval.length}`)
+
+    containerListForRemoval.forEach((container) => {
+      console.log(`Deleted aaa with id: ${container.id}, ${container.metadata.container.tags}`)
+    })
+  } catch (error) {
+    console.log('Error occurred')
+    console.log(error.message)
+  }
+}
+run()
