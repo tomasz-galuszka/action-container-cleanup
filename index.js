@@ -13,8 +13,22 @@ async function run() {
 
     const octokit = github.getOctokit(token)
     const response = await octokit.rest.packages.getAllPackageVersionsForPackageOwnedByAuthenticatedUser(params)
+    const containersSortedList = response.data.sort((a, b) => {
+      return new Date(a.updated_at) - new Date(b.updated_at)
+    })
+    containersSortedList.splice(0, 2)
+    console.log(containersSortedList)
 
-    console.log(response)
+    containersSortedList.forEach((container) => {
+      const response = await octokit.rest.packages.deletePackageVersionForUser({
+        package_type: 'container',
+        package_name: core.getInput('packagename'),
+        username: 'tomasz-galuszka',
+        package_version_id: container.id
+      })
+      console.log(container)
+      console.log(response)
+    })
   } catch (error) {
     console.log('Error occurred')
     console.log(error.message)
