@@ -14,20 +14,22 @@ async function run() {
     const octokit = github.getOctokit(token)
     const response = await octokit.rest.packages.getAllPackageVersionsForPackageOwnedByAuthenticatedUser(params)
     const containersSortedList = response.data.sort((a, b) => {
-      return new Date(a.updated_at) - new Date(b.updated_at)
+      return new Date(b.updated_at) - new Date(a.updated_at)
     })
-    containersSortedList.splice(0, 2)
-    console.log(containersSortedList)
+    console.log(`Containers size: ${containersSortedList.length}`)
+
+    const skipped = containersSortedList.splice(0, 2)
+
+    console.log(`Skipped from deletion ${JSON.stringify(skipped, null, 2)}`)
 
     containersSortedList.forEach(async (container) => {
-      const response = await octokit.rest.packages.deletePackageVersionForUser({
+      await octokit.rest.packages.deletePackageVersionForUser({
         package_type: 'container',
         package_name: core.getInput('packagename'),
         username: 'tomasz-galuszka',
         package_version_id: container.id
       })
-      console.log(container)
-      console.log(response)
+      console.log(`Deleted ${core.getInput('packagename')} with id: ${container.id}`)
     })
   } catch (error) {
     console.log('Error occurred')
