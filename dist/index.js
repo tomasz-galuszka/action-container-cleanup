@@ -8445,17 +8445,27 @@ var __webpack_exports__ = {};
 const core = __nccwpck_require__(6024)
 const github = __nccwpck_require__(5016)
 
-try {
-  const nameToGreet = core.getInput('name')
-  const time = new Date().toTimeString()
-  const eventPayload = JSON.stringify(github.context.payload, undefined, 2)
+async function run() {
+  try {
+    const token = core.getInput('token')
+    const username = core.getInput('username')
+    const packagename = core.getInput('packagename')
 
-  core.setOutput('time', time)
-  console.log(`Hello ${nameToGreet}`)
-  console.log(`The event payload: ${eventPayload}`)
-} catch (error) {
-  console.setFailed(error.message)
+    const octokit = github.getOctokit(token)
+
+    const response = await octokit.request('GET /users/{username}/packages/{package_type}/{package_name}/versions', {
+      package_type: 'container',
+      package_name: packagename,
+      username: username
+    })
+
+    console.log(response)
+  } catch (error) {
+    console.setFailed(error.message)
+  }
 }
+
+run()
 
 })();
 
