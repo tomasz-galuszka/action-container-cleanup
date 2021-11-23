@@ -8446,25 +8446,17 @@ const core = __nccwpck_require__(6024)
 const github = __nccwpck_require__(5016)
 
 async function run() {
-  try {
-    const token = core.getInput('token')
-    const username = core.getInput('username')
-    const packagename = core.getInput('packagename')
+  const token = core.getInput('token')
+  const packagename = core.getInput('packagename')
+  const octokit = github.getOctokit(token)
 
-    const octokit = github.getOctokit(token)
+  const response = await octokit.rest.packages.getAllPackageVersionsForPackageOwnedByAuthenticatedUser({
+    package_type: 'container',
+    package_name: packagename
+  })
 
-    const response = await octokit.request('GET /users/{username}/packages/{package_type}/{package_name}/versions', {
-      package_type: 'container',
-      package_name: packagename,
-      username: username
-    })
-
-    console.log(response)
-  } catch (error) {
-    console.setFailed(error.message)
-  }
+  console.log(response)
 }
-
 run()
 
 })();

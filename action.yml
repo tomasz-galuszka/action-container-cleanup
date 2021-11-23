@@ -5,10 +5,6 @@ inputs:
     description: 'authentication token'
     required: true
     default: ''
-  username:
-    description: 'repository owner name'
-    required: true
-    default: ''
   packagename:
     description: 'package name'
     required: true
